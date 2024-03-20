@@ -1,10 +1,11 @@
 const express = require("express");
-const {z, string} = require("zod")
+const {z} = require("zod")
 const {User } = require("../db/db")
 const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const SECRET = process.env.SECRET
 const bcrypt = require("bcrypt")
+const authMiddleware = require("./middleware")
 
 const router = express.Router(); 
 
@@ -87,6 +88,8 @@ router.post("/login", async( req, res) => {
     const token = jwt.sign({ 
         userId : user._id
     }, SECRET); 
+    
+
     res.status(201).json({ Message : "Sucessfully Loggedin", token})
 })
 
