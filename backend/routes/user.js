@@ -170,7 +170,7 @@ router.put("/update/details", authMiddleware, async(req, res) => {
 
 router.get("/bulk", authMiddleware, async( req, res) => { 
 
-    const filter = req.query.filter; 
+    const filter = req.query.filter || ""; 
 
     if ( filter ) { 
         try {
@@ -202,43 +202,13 @@ router.get("/bulk", authMiddleware, async( req, res) => {
             res.status(401).json({ Message : "Error in finding users"})
             
         }
+    } else {
+      res.status(401).json({Message : "Issue with filter"})
     }
 })
 
 
-// router.get("/bulk", authMiddleware, async( req, res) => { 
-//     const filter = req.query.filter; 
 
-//     if ( filter ) { 
-//         try {
-            
-//             const users = await User.find({ 
-//                 $or: [{
-//                     firstname : {
-//                         "$regex" : filter
-//                     }
-//                 }, { 
-//                     lastname : { 
-//                         "$regex" : filter
-//                     }
-//                 }]
-//             }).exec()
-
-//             res.json({ 
-//                 user : users.map(user => ({ 
-//                     username : user.username,
-//                     lastname : user.lastname,
-//                     firstname : user.firstname, 
-//                     _id: user._id
-//                 }))
-//             })
-
-//         } catch (error) {
-//             res.status(400).json("Error while searching users")
-//         }
-//     }
-
-// })
 
 
 module.exports = router;
