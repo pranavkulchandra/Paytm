@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const SECRET = process.env.SECRET
 const bcrypt = require("bcrypt")
-const authMiddleware = require("./middleware")
+const {authMiddleware} = require("./middleware")
 
 const router = express.Router(); 
 
@@ -17,11 +17,8 @@ const SignupBody = z.object({
 
 })
 
-
 router.post("/signup", async(req, res) => { 
-    console.log(req.body)
     const { success } = SignupBody.safeParse(req.body); 
-    console.log(success)
     if ( !success) { 
        return res.status(411).json({ Message : `Email already taken / Incorrect password`})
     }
@@ -42,7 +39,7 @@ router.post("/signup", async(req, res) => {
         firstname: req.body.firstname,
         lastname: req.body.lastname
      })
-        console.log(user)
+        
         
     
     const token = jwt.sign({ 
@@ -91,6 +88,80 @@ router.post("/login", async( req, res) => {
     
 
     res.status(201).json({ Message : "Sucessfully Loggedin", token})
+})
+
+//updte user API password 
+
+const updatedBody = z.object({ 
+    firstname : z.string().optional(),
+    lastname : z.string().optional(),
+    password : z.string().optional()
+})
+
+
+router.put("/update/password", authMiddleware, async (req ,res) => { 
+
+    const { success, data } = updatedBody.safeParse(req.body)
+
+    if (!success) { 
+        return res.status(403).json({ Message : "Invalid Input"})
+    }
+
+    try {
+        const user = await User.findById(req.userId)
+        if ( !user ) { 
+            return res.status(401).json({ Message : "User with UserId not found"})
+        }
+
+        if ( !data.password ) { 
+            res.status(401).json({ Message : "Password not found in data"})
+        }
+
+        user.password = data.password
+
+        await user.save()
+        return res.status(200).json({Message : "User updaed sucessfully"})
+    } catch (error) {
+        return res.status(401).json({error : error})
+    }
+
+})
+
+//update user firstname or lastname 
+
+router.put("/update/details", authMiddleware, async(req, res) => { 
+    const {success, data} = updatedBody.safeParse(req.body);
+
+    if (! success ) { 
+        return res.status(403).json({Message : "Invalid Input try again "})
+    }
+
+
+    try {
+        if ( req.userId ) {
+            console.log(req.userId, "from updateAPI ")
+            const user = await User.findById(req.userId) 
+
+            if (!user) { 
+                return res.status(401).json({ Message : "User not found"})
+            }
+
+            if ( data.firstname ) {
+                user.firstname = data.firstname 
+             }
+
+             if ( data.lastname ) { 
+                user.lastname = data.lastname
+             }
+
+            await user.save()
+            return res.status(200).json({ Message : "User details updated Sucessfully"})
+        }
+
+
+    } catch (error) {
+        res.status(401).json({Message :  "An error occured while updating user" ,Error : error})        
+    }
 })
 
 

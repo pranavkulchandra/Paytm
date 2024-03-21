@@ -1,10 +1,9 @@
-const { JWT } = require("jsonwebtoken");
+const JWT  = require("jsonwebtoken");
 
 const SECRET = process.env.SECRET
 
 const authMiddleware = (req, res, next ) => { 
     const authHeaders = req.headers.authorization; 
-
     if (!authHeaders || !authHeaders.startsWith("Bearer ")) { 
         return res.status(401).json({Message : "Bearer not correct"})
     }
@@ -13,7 +12,7 @@ const authMiddleware = (req, res, next ) => {
 
     try {
         const decoded = JWT.verify(token, SECRET) 
-
+        console.log(decoded)
         if(decoded.userId) {
         req.userId = decoded.userId; 
         next()
@@ -23,8 +22,11 @@ const authMiddleware = (req, res, next ) => {
 
     } catch (error) {
         return res.status(403).json({ Message : "Token error "})        
+
     }
 
 }
+
+
 
 module.exports = { authMiddleware }
