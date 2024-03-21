@@ -5,8 +5,10 @@ const jwt = require("jsonwebtoken")
 const app = express()
 const rootRouter = require("./routes/index")
 const userRouter = require("./routes/user")
+const accountRouter = require("./routes/account")
 require("dotenv").config();
 const bodyParser  = require("body-parser")
+
 
 const port = 3000
 const mongoString = process.env.MongoDBString
@@ -21,6 +23,7 @@ app.use(cors())
 app.use(express.json())
 app.use("/api/v1", rootRouter)
 app.use("/api/v1/user", userRouter)
+app.use("/api/v1/account", accountRouter);
 mongoose.connect(mongoString)
 
 

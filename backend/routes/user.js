@@ -1,6 +1,6 @@
 const express = require("express");
 const {z} = require("zod")
-const {User } = require("../db/db")
+const {User, Account } = require("../db/db")
 const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const SECRET = process.env.SECRET
@@ -39,16 +39,27 @@ router.post("/signup", async(req, res) => {
         firstname: req.body.firstname,
         lastname: req.body.lastname
      })
-        
-        
+     const userId = user._id; 
+     console.log(userId, "from Accounts signup")
+
+     await Account.create({
+        userId : userId,
+        balance : 1+ Math.random() * 1000
+     })
     
+     
     const token = jwt.sign({ 
         userId : user._id 
+
+
+
     },SECRET)
     return res.status(200).json({ 
         Message : "User Sucessfull created", 
         token : token
     })
+
+    
 
 
 } catch (e) { 

@@ -1,5 +1,6 @@
 const { default: mongoose } = require("mongoose");
-const bcrypt = require("bcrypt")
+const bcrypt = require("bcrypt");
+const { object } = require("zod");
 
 const userSchema = mongoose.Schema({ 
     firstname :  {
@@ -36,6 +37,19 @@ const userSchema = mongoose.Schema({
 })
 
 
+const accountsSchema = mongoose.Schema({ 
+    userId : { 
+        type : mongoose.Schema.Types.ObjectId, 
+        ref : "User", 
+        required : true
+    }, 
+    balance : { 
+        type : Number, 
+        required : true
+    }
+})
+
+
 userSchema.pre("save", async function(next) { 
     try{
     const salt = await bcrypt.genSalt(10);
@@ -48,8 +62,9 @@ userSchema.pre("save", async function(next) {
 })
 
 const User = mongoose.model("User", userSchema)
+const Account = mongoose.model("Account", accountsSchema)
 
-module.exports = {User}
+module.exports = {User, Account}
 
  
 
