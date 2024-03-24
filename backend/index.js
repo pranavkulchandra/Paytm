@@ -33,4 +33,4 @@ app.listen(port, ()=> {
     console.log(`backend running on port ${port}`)
 })
 
-
+module.exports = app;

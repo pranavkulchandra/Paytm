@@ -210,11 +210,11 @@ router.get("/bulk", authMiddleware, async( req, res) => {
             }
  
         } catch (error) {
-            res.status(401).json({ Message : "Error in finding users"})
+            res.status(406).json({ Message : "Error in finding users"})
             
         }
     } else {
-      res.status(401).json({Message : "Issue with filter"})
+      res.status(407).json({Message : "Issue with filter"})
     }
 })
 

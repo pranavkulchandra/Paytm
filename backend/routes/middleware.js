@@ -17,11 +17,11 @@ const authMiddleware = (req, res, next ) => {
         req.userId = decoded.userId; 
         next()
     } else { 
-        return res.status(403).json({Message : "UserId not found in token"})
+        return res.status(402).json({Message : "UserId not found in token"})
     }
 
     } catch (error) {
-        return res.status(403).json({ Message : "Token error "})        
+        return res.status(405).json({ Message : "Token error "})        
 
     }
 
