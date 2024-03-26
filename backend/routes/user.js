@@ -5,7 +5,8 @@ const jwt = require("jsonwebtoken")
 require("dotenv").config();
 const SECRET = process.env.SECRET
 const bcrypt = require("bcrypt")
-const {authMiddleware} = require("./middleware")
+const {authMiddleware} = require("./middleware");
+const { use } = require("chai");
 
 const router = express.Router(); 
 
@@ -40,7 +41,7 @@ router.post("/signup", async(req, res) => {
         lastname: req.body.lastname
      })
      const userId = user._id; 
-     console.log(userId, "from Accounts signup")
+
 
      await Account.create({
         userId : userId,
@@ -140,8 +141,13 @@ router.put("/update/password", authMiddleware, async (req ,res) => {
 
 //update user firstname or lastname 
 
+const updatedDetails = z.object({ 
+    firstname : z.string().optional(),
+    lastname : z.string().optional()
+})
+
 router.put("/update/details", authMiddleware, async(req, res) => { 
-    const {success, data} = updatedBody.safeParse(req.body);
+    const {success, data} = updatedDetails.safeParse(req.body);
 
     if (! success ) { 
         return res.status(403).json({Message : "Invalid Input try again "})
@@ -150,11 +156,10 @@ router.put("/update/details", authMiddleware, async(req, res) => {
 
     try {
         if ( req.userId ) {
-            console.log(req.userId, "from updateAPI ")
-            const user = await User.findById(req.userId) 
+            const user = await User.findById(req.userId);
 
             if (!user) { 
-                return res.status(401).json({ Message : "User not found"})
+                return res.status(402).json({ Message : "User not found"})
             }
 
             if ( data.firstname ) {
@@ -164,14 +169,15 @@ router.put("/update/details", authMiddleware, async(req, res) => {
              if ( data.lastname ) {  
                 user.lastname = data.lastname
              }
-
+            
             await user.save()
-            return res.status(200).json({ Message : "User details updated Sucessfully"})
+
+            return res.status(200).json({ Message : "User details updated Sucessfully", firstname : user.firstname})
         }
 
 
     } catch (error) {
-        res.status(401).json({Message :  "An error occured while updating user" ,Error : error})        
+        res.status(500).json({Message :  "An error occured while updating user" ,Error : error})        
     }
 })
 
@@ -181,8 +187,9 @@ router.put("/update/details", authMiddleware, async(req, res) => {
 
 router.get("/bulk", authMiddleware, async( req, res) => { 
 
+    
     const filter = req.query.filter || ""; 
-
+    
     if ( filter ) { 
         try {
             
@@ -198,7 +205,7 @@ router.get("/bulk", authMiddleware, async( req, res) => {
                 }]
             })
 
-            if (users) { 
+            if (users && users.length > 0) { 
                 res.json({ 
                     user : users.map(user=> ({
                         firstname : user.firstname, 
