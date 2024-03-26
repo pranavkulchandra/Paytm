@@ -22,7 +22,7 @@ router.get("/balance",authMiddleware, async( req, res)=> {
             
         }
     } else { 
-        res.status(401).json({ Message : "UserId not found"})
+        res.status(500).json({ Message : "UserId not found"})
     }
 })
 
@@ -66,7 +66,7 @@ try {
     
 
 } catch (error) {
-   return res.status(400).json({Error : error, Message : "From Catch "})
+   return res.status(500).json({Error : error, Message : "From Catch "})
 }
 
 })
