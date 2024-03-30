@@ -1,4 +1,4 @@
-export function  AppBar ()  { 
+export function  AppBar ({users})  { 
 
     return (
         <div className="shadow h-14 flex justify-between">
@@ -11,7 +11,7 @@ export function  AppBar ()  {
                 </div>
                 <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
                     <div className="flex flex-col justify-center h-full text-xl">
-                    U
+                    {/*{users.firstname[0]} */} U
                     </div>
                 </div>
             </div>

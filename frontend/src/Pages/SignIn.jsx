@@ -5,6 +5,7 @@ import { SubHeading } from "../Components/Subheading";
 import { Button } from "../Components/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { BottomWarning } from "../Components/BottomWarning";
 
 export function SignIn() { 
 
@@ -58,6 +59,7 @@ export function SignIn() {
                     navigate("/dashboard")
                 }}/>
                 </div>
+                <BottomWarning buttonText={"SignUp"} to={"/signup"} label={"Don't Have an account?"}/>
             </div>
         </div>
         
