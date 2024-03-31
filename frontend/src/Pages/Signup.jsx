@@ -70,7 +70,7 @@ export function Signup(){
                     navigate("/dashboard")
                 }} ></Button>
                 </div>
-                <BottomWarning label={"If you Aready have an account"} to={"/signin"} buttonText={"SignIn"}/>
+                <BottomWarning label={"If you Aready have an account"} to={"/signin"} buttonText={"Log In"}/>
             </div>
         </div>
     </div>

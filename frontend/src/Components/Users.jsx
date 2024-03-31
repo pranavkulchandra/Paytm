@@ -42,7 +42,9 @@ function User({user}) {
             </div>
         </div>
         <div>
-            <Button  label={"Send Money"}/>
+            <Button onClick={(e) => { 
+                navigate("/send?toUserId=" + user._id + "&name=" + user.firstname)                
+            }} label={"Send Money"}/>
         </div>
     </div>    
 
