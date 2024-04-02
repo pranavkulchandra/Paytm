@@ -11,6 +11,7 @@ export function SendMoney () {
     const toUserId = searchParams.get("toUserId");
     const name = searchParams.get("name");
     const [ amount , setAmount ]= useState(0);
+    const [ errorMessage, setErrorMessage ] = useState("")
     const navigate = useNavigate();
 
 
@@ -33,7 +34,17 @@ export function SendMoney () {
         </div>
         </div>
         <div className="text-sm font-medium peer-disabled:cursor-not-allowed peer-disabled:opacity-70">Amount (C$)</div>
-        <InputBox label={"amount"} placeHolder={"Amount in CAD"} onChange={(e) => {setAmount(e.target.value)}}/>
+        <InputBox label={"amount"} placeHolder={"Amount in CAD"} onChange={(e) => {
+            const value = e.target.value
+            const amountNumber = parseFloat(value)
+            if (!isNaN(amountNumber))  { 
+                setAmount(amountNumber)
+                setErrorMessage("")
+            } else { 
+                setErrorMessage("Input should be a number")
+            }
+        }}/>
+        {errorMessage && <div className="text-red-500 text-sm text-center">{errorMessage}</div>}
         <div className="p-2">
         <SendButton label={"Send"} onClick={async() => { 
             console.log(toUserId, "Test ID")

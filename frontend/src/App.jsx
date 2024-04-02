@@ -3,6 +3,7 @@ import { Signup } from "./Pages/Signup"
 import { SignIn } from "./Pages/SignIn"
 import { Dashboard } from "./Pages/Dashboard"
 import { SendMoney } from "./Pages/SendMoney"
+import { Balance } from "./Pages/Balance"
 
 
 
@@ -17,6 +18,7 @@ function App() {
         <Route path="/signin" element={<SignIn />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/send" element={<SendMoney />} />
+        <Route path="/balance" element={<Balance />} />
       </Routes>
       </BrowserRouter>
     </div>
