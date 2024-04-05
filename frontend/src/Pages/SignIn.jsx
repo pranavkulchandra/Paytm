@@ -6,10 +6,12 @@ import { Button } from "../Components/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BottomWarning } from "../Components/BottomWarning";
+import { useRecoilState } from "recoil";
+import { usernameAtom } from "../store/Atoms/username";
 
 export function SignIn() { 
 
-    const [ username, setUsername] = useState("");
+    const [ username, setUsername] = useRecoilState(usernameAtom);
     const [ password , setPassword ] = useState("");
     const [ showPassword, setShowPassword ] = useState(false);
     const navigate = useNavigate();
