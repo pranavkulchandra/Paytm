@@ -1,4 +1,3 @@
-import { AppBar } from "../Components/AppBar";
 import { Balance } from "../Components/Balance";
 import { Users } from "../Components/Users";
 

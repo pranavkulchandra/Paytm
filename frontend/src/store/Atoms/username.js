@@ -1,8 +1,9 @@
 import { atom } from "recoil";
 
 export const usernameAtom = atom({
-    key : "username", 
+    key : "usernameAtom", 
     default : { 
         username : null, 
+        isLoading : true
     }
  }) 

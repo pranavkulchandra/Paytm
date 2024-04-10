@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Button } from "../Components/Button";
 import { SendButton } from "../Components/SendButton";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { InputBox } from "../Components/InputBox";

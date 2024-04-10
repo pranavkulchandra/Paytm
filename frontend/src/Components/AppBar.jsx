@@ -1,15 +1,23 @@
+
+import { usernameAtom } from "../store/Atoms/username";
+import { isUserLoading } from "../store/Selectors/isLoading";
+import  {isUserEmail}  from "../store/Selectors/isUserEmail";
 import { useEffect, useState } from "react"
 import { Button } from "./Button";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { useRecoilState } from "recoil";
-import { usernameAtom } from "../store/Atoms/username";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+
+
+
 
 
 export function  AppBar ()  { 
 
-    const [ username, setUsername ]= useRecoilState(usernameAtom);
-    const navigate = useNavigate("")
+    const  userEmail  = useRecoilValue(isUserEmail);
+    const isLoading  = useRecoilValue(isUserLoading);
+    const setUsername  = useSetRecoilState(usernameAtom)
+
 
     useEffect(()=>{
         try {
@@ -18,19 +26,18 @@ export function  AppBar ()  {
                     "Authorization" : "Bearer " + localStorage.getItem("token")
                 }
             }).then(resp => 
-                setUsername(resp.data.username))
-            console.log("/me called triggred")
+                setUsername({username :  resp.data.username , isLoading : false}))
         } catch (error) {
             console.log(error)
         }
-    },[username])
+    },[userEmail])
 
 
-    
+
     return (
         <div>
-            {username ? (
-                <LoggedInComp username={username} setUsername={setUsername}/>                
+            {userEmail ? (
+                <LoggedInComp/>                
             ) : (
                 <LoggedOutCOmp />
             )}
@@ -43,9 +50,16 @@ export function  AppBar ()  {
 }
 
 
-function LoggedInComp({username, setUsername}) { 
+function LoggedInComp() { 
 
     const navigate = useNavigate()
+    const  [showMenu , setShowMenu ] = useState(false)
+    const userEmail  = useRecoilValue(isUserEmail);
+    const setUser  = useSetRecoilState(usernameAtom)
+
+    const onclickMenu =() => { 
+        return setShowMenu(!showMenu)
+    }
 
     return (
         <div className="shadow h-14 flex justify-between">
@@ -58,22 +72,33 @@ function LoggedInComp({username, setUsername}) {
             <div className="flex flex-col justify-center h-full mr-4">
                 <Button label={"Signout"} onClick={()=> { 
                     localStorage.removeItem("token")
-                    setUsername(null);
+                    setUser({username :null , isLoading : true});
                     navigate("/signin")
                 }}/>
             </div>
-            <div className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
-                <div className="flex flex-col justify-center h-full text-xl">
-                {username[0]} 
-                </div>
+            <div className="mt-1 mx-4">
+                <Button label={"Balance"} onClick={()=> { 
+                    navigate("/balance")
+                }}  /> 
             </div>
+            <button onClick={onclickMenu} className="rounded-full h-12 w-12 bg-slate-200 flex justify-center mt-1 mr-2">
+                <span className="flex flex-col justify-center h-full text-xl">
+                {userEmail[0]} 
+                </span>
+            </button>
+            {showMenu && (
+                <div className="absolute mt-14 right-0 w-40 bg-slate-400 border border-gray-200 rounded-lg shadow-lg">
+                    <button className="block w-full py-2 text-left px-4 hover:bg-gray-100" onClick={() => { navigate("/balance"); }}>Balance</button>
+                    <button className="block w-full py-2 text-left px-4 hover:bg-gray-100 border-black" onClick={() => { localStorage.removeItem("token"); setUsername(null); navigate("/signin"); }}>Sign Out</button>    
+                </div>
+            )}
         </div>
     </div>
 )
     
 }
 
-function LoggedOutCOmp() { 
+    function LoggedOutCOmp() { 
 
     const navigate = useNavigate("")
 

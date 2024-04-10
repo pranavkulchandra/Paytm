@@ -6,14 +6,15 @@ import { Button } from "../Components/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BottomWarning } from "../Components/BottomWarning";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { usernameAtom } from "../store/Atoms/username";
 
 export function SignIn() { 
 
-    const [ username, setUsername] = useRecoilState(usernameAtom);
+    const [ username, setUsername] = useState("")
     const [ password , setPassword ] = useState("");
     const [ showPassword, setShowPassword ] = useState(false);
+    const setUser = useSetRecoilState(usernameAtom)
     const navigate = useNavigate();
 
     const toggleShowPassword = () => { 
@@ -58,6 +59,7 @@ export function SignIn() {
                         password
                     })
                     localStorage.setItem("token", resp.data.token);
+                    setUser({username : username, isLoading : false})
                     navigate("/dashboard")
                 }}/>
                 </div>
