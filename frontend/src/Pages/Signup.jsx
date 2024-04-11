@@ -6,6 +6,8 @@ import { Button } from "../Components/Button";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { BottomWarning } from "../Components/BottomWarning";
+import { useSetRecoilState } from "recoil";
+import { usernameAtom } from "../store/Atoms/username";
 
 
 
@@ -18,6 +20,7 @@ export function Signup(){
     const [ username , setUsername ] = useState("");
     const [ password , setPassword ] = useState("");
     const [ showPassword , setShowPassword ] = useState(false); 
+    const setUser = useSetRecoilState(usernameAtom)
     const navigate = useNavigate()
     
 
@@ -67,6 +70,7 @@ export function Signup(){
                       password  
                     });
                     localStorage.setItem("token", resp.data.token)
+                    setUser({username : username, isLoading : false})
                     navigate("/dashboard")
                 }} ></Button>
                 </div>

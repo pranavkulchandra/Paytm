@@ -15,7 +15,38 @@ export function SignIn() {
     const [ password , setPassword ] = useState("");
     const [ showPassword, setShowPassword ] = useState(false);
     const setUser = useSetRecoilState(usernameAtom)
+    const [ errorMessage , setErrorMessage] = useState("")
+    const [ emailError, setEmailError ] = useState("");
     const navigate = useNavigate();
+
+
+
+
+    const callSignin = async() => { 
+            try {
+                if(!password) { 
+                   return setErrorMessage("Password cannot be empty")
+                }
+                const resp = await axios.post("http://localhost:3000/api/v1/user/login", { 
+                username, 
+                password
+            })
+            localStorage.setItem("token", resp.data.token);
+            setUser({username : username, isLoading : false})
+            navigate("/dashboard")
+                
+            } catch (error) {
+                if(error.response.status === 401) { 
+                    setErrorMessage(error.response.data.message || "Incorrect inputs/email taken");
+                } else if ( error.response.status === 402) { 
+                    setErrorMessage(error.response.data.message || "Incorrect Password"); 
+
+                } else { 
+                    setErrorMessage("An Error has occured please try again later")
+                }
+            }
+            
+    }
 
     const toggleShowPassword = () => { 
         return setShowPassword(!showPassword)
@@ -26,13 +57,28 @@ export function SignIn() {
             <div className=" bg-white rounded-lg text-center h-max p-2 px-4">
                 <Heading label={"Signin"}/>
                 <SubHeading label={"Enter Details Here"}/>
-                <InputBox label={"Email"} placeHolder={"jpinto@gmail.com"} onChange={e=> { 
-                    setUsername(e.target.value)
-                }} />
                 <div className="relative">
-                <InputBox type={showPassword ? "text" : "password"} label={"Password"} placeHolder={"*******"} onChange={e=> { 
+                <InputBox onFocus={()=> setEmailError("")} label={"Email"} placeHolder={"jpinto@gmail.com"} onChange={e=> { 
+                    setUsername(e.target.value)
+                }} onBlur={(e) => { 
+                    const emailpattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    if (!emailpattern.test(e.target.value)) { 
+                        setEmailError("Invalid email address")
+                    } else { 
+                        setEmailError("")
+                    }
+                    }} />
+                <div>
+                {emailError && <div className="inset-y-0 right-0 text-red-500 text-sm text-center">{emailError}</div>}
+                </div>
+                </div>
+                <div className="relative">
+                <InputBox onFocus={()=> setErrorMessage("")} type={showPassword ? "text" : "password"} label={"Password"} placeHolder={"****"} onChange={e=> { 
                     setPassword(e.target.value)
                 }} />
+                {errorMessage && (
+                    <div className="absolute inset-y-0 right-0 flex items-center pr-10 pt-8 pointer-events-none">
+                <div className="text-red-500 text-center text-sm">{errorMessage}</div></div>)}
                 <div className="absolute inset-y right-1 bottom-1 cursor-pointer" onClick={toggleShowPassword}>{
                     showPassword ? (
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -53,15 +99,7 @@ export function SignIn() {
 
                 </div>
                 <div className="p-4">
-                <Button label={"Signin"} onClick={async () => { 
-                    const resp = await axios.post("http://localhost:3000/api/v1/user/login", { 
-                        username, 
-                        password
-                    })
-                    localStorage.setItem("token", resp.data.token);
-                    setUser({username : username, isLoading : false})
-                    navigate("/dashboard")
-                }}/>
+                <Button label={"Signin"} onClick={callSignin}/>
                 </div>
                 <BottomWarning buttonText={"SignUp"} to={"/signup"} label={"Don't Have an account?"}/>
             </div>

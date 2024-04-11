@@ -41,6 +41,7 @@ export function Balance () {
 
                     }
                 }} placeHolder={"Amount in CAD$"}/>   
+                {errorMessage && <div className="text-red-500 text-sm text-center">{errorMessage}</div>}
                 <Button label={"Add Money"} onClick={()=> { 
                     try {
 
@@ -57,7 +58,7 @@ export function Balance () {
                     }
                 }} /> 
                 </div>
-                {errorMessage && <div className="text-red-500 text-sm text-center">{errorMessage}</div>}
+            
                 </div>
                 </div>
         </div>
