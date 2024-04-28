@@ -25,10 +25,10 @@ export function SendMoney () {
         <div className="p-6">
             <div className="flex items-center space-x-4">
                 <div className="rounded-full w-12 h-12 bg-slate-400 hover:bg-slate-800 text-white font-bold focus:ring-slate-800 flex items-center justify-center">
-        <div>FN</div>
+        <div>{name.slice(0,2)}</div>
         </div>
         <div>
-        <h3 className="text-2xl font-bold ">Name</h3>
+        <h3 className="text-2xl font-bold ">{name}</h3>
         </div>
         </div>
         </div>
